@@ -1,4 +1,9 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+ClubFitness Manager
+
+Acest proiect este o aplicație de management a unui club de fitness, care permite administrarea echipamentelor și a membrilor. Utilizatorul poate adăuga echipamente și membri, porni utilizarea echipamentelor pentru o durată specificată de un anumit membru și actualiza statusul echipamentelor.
+
+
+
 
 ### Folosiți template-ul corespunzător grupei voastre!
 
