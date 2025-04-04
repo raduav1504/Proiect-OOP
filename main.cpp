@@ -75,7 +75,7 @@ public:
             }
         }
     }
-    
+
     const std::string& getType() const
     {
         return type;
@@ -221,17 +221,17 @@ public:
         equipments[eqIndex].startUsage(duration, members[memberIndex].getName());
     }
     // status sala
-    void printStatus() const
-    {
-        std::cout<<"\nGym: "<<name<<"\nEquipments:\n";
-        for(size_t i=0; i<equipments.size(); i++)
-        {
-            std::cout<<" ["<<i<<"] "<<equipments[i]<<"\n";
-        }
-        std::cout<<"Members:\n";
-        for(const auto& m: members)
-            std::cout<<" "<<m<<"\n";
+  void printStatus() const {
+    std::cout<<"\nGym: "<<name<<"\nEquipments:\n";
+    for (size_t i=0;i<equipments.size(); i++) {
+        std::cout<<" [" << i << "] "<<equipments[i]<<"\n";
     }
+    std::cout<<"Members:\n";
+    for (const auto& m : members) {
+        std::cout<<" "<<m<<" - ID: "<<m.getID()<<"\n";
+    }
+}
+
 };
 
 int main()
