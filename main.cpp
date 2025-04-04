@@ -75,10 +75,7 @@ public:
             }
         }
     }
-    bool isAvailable() const
-    {
-        return !inUse;
-    }
+    
     const std::string& getType() const
     {
         return type;
