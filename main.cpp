@@ -25,7 +25,7 @@ public:
     Equipment(const Equipment& other)
         : type{other.type}, inUse{other.inUse}, usageTimeRemaining{other.usageTimeRemaining}, currentUser{other.currentUser}
     {
-        std::cout << "Equipment copy constructed: " << type << "\n";
+
     }
     // operator atribuire
     Equipment& operator=(const Equipment& other)
@@ -36,14 +36,14 @@ public:
             inUse = other.inUse;
             usageTimeRemaining = other.usageTimeRemaining;
             currentUser = other.currentUser;
-            std::cout << "Equipment copy assigned: " << type << "\n";
+
         }
         return *this;
     }
     //destructor
     ~Equipment()
     {
-        std::cout << "Equipment destroyed: " << type << "\n";
+
     }
     // start echip + timp
     void startUsage(int duration, const std::string& user)
@@ -114,7 +114,7 @@ public:
     Member(const Member& other)
         : name{other.name}, membershipID{other.membershipID}
     {
-        std::cout<<"Member copy constructed: "<<name<<"\n";
+
     }
     // operator atribuire
     Member& operator=(const Member& other)
@@ -123,7 +123,7 @@ public:
         {
             name=other.name;
             membershipID = other.membershipID;
-            std::cout<<"Member copy assigned: "<<name<<"\n";
+
         }
         return *this;
     }
@@ -131,7 +131,7 @@ public:
     //destructor
     ~Member()
     {
-        std::cout << "Member destroyed: " << name << "\n";
+
     }
     const std::string& getName() const
     {
@@ -168,7 +168,7 @@ public:
     //constructor de copiere
     Gym(const Gym& other): name{other.name}, equipments{other.equipments}, members{other.members}
     {
-        std::cout << "Gym copy constructed: " << name << "\n";
+
     }
     //operator
     Gym& operator=(const Gym& other)
@@ -178,7 +178,7 @@ public:
             name = other.name;
             equipments = other.equipments;
             members = other.members;
-            std::cout << "Gym copy assigned: " << name << "\n";
+
         }
         return *this;
     }
