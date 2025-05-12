@@ -2,7 +2,7 @@
 
 #include "Exceptions.hpp"
 
-// definițiile out-of-line ale constructorilor
+// definitiile out-of-line ale constructorilor
 
 MemberException::MemberException(const std::string& msg)
   : std::runtime_error(msg)
