@@ -4,6 +4,7 @@
 #include "ClubManager.hpp"
 #include "Treadmill.hpp"
 #include "Dumbbell.hpp"
+#include "Equipment.hpp"
 #include "StationaryBike.hpp"
 #include "YogaMat.hpp"
 #include "Member.hpp"
