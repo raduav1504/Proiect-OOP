@@ -2,75 +2,87 @@
 #include <iostream>
 #include <utility>
 
+int Equipment::totalCount_ = 0;
+
 Equipment::Equipment(std::string type)
-  : type_{std::move(type)}, inUse_{false}, remaining_{0}, user_{},
-    usageCount_{0}, underMaintenance_{false} {
+  : type_{std::move(type)}
+  , inUse_{false}
+  , remaining_{0}
+  , user_{}
+  , usageCount_{0}
+  , underMaintenance_{false}
+  , maintenanceRemaining_{0}
+{
+    ++totalCount_;
     std::cout << "Created equipment: " << type_ << "\n";
 }
 
-Equipment::~Equipment() = default;
+Equipment::~Equipment() {
+    --totalCount_;
+}
 
 Equipment::Equipment(const Equipment& other)
-  : type_{other.type_}, inUse_{other.inUse_}, remaining_{other.remaining_},
-    user_{other.user_}, usageCount_{other.usageCount_},
-    underMaintenance_{other.underMaintenance_} {}
+  : type_{other.type_}
+  , inUse_{other.inUse_}
+  , remaining_{other.remaining_}
+  , user_{other.user_}
+  , usageCount_{other.usageCount_}
+  , underMaintenance_{other.underMaintenance_}
+  , maintenanceRemaining_{other.maintenanceRemaining_}
+{
+    ++totalCount_;
+}
 
 Equipment& Equipment::operator=(Equipment other) {
     swap(*this, other);
     return *this;
 }
 
-void swap(Equipment& a, Equipment& b) noexcept {
-    using std::swap;
-    swap(a.type_, b.type_);
-    swap(a.inUse_, b.inUse_);
-    swap(a.remaining_, b.remaining_);
-    swap(a.user_, b.user_);
-    swap(a.usageCount_, b.usageCount_);
-    swap(a.underMaintenance_, b.underMaintenance_);
-}
-
-const std::string& Equipment::getType() const noexcept { return type_; }
-int Equipment::getUsageCount() const noexcept { return usageCount_; }
-bool Equipment::isUnderMaintenance() const noexcept { return underMaintenance_; }
-
-void Equipment::scheduleMaintenance() {
-    underMaintenance_ = true;
-    std::cout << type_ << " scheduled for maintenance" << "\n";
+void Equipment::scheduleMaintenance(int duration) {
+    if (inUse_) {
+        std::cout << type_ << " is currently in use, cannot schedule maintenance\n";
+        return;
+    }
+    underMaintenance_    = true;
+    maintenanceRemaining_ = duration;
+    std::cout << type_ << " scheduled for maintenance (" << duration << ")\n";
 }
 
 void Equipment::completeMaintenance() {
-    underMaintenance_ = false;
-    std::cout << type_ << " maintenance completed" << "\n";
+    underMaintenance_    = false;
+    maintenanceRemaining_ = 0;
+    std::cout << type_ << " maintenance completed\n";
 }
 
-// Exemplu subclasă: Treadmill
-class Treadmill : public Equipment {
-public:
-    Treadmill() : Equipment("Treadmill") {}
-    void update() override {
-        if (underMaintenance_) return;
-        if (inUse_ && --remaining_ == 0) {
-            inUse_ = false;
-            user_.clear();
-            std::cout << type_ << " now available\n";
-        }
+const std::string& Equipment::getType() const noexcept        { return type_; }
+int                 Equipment::getUsageCount() const noexcept { return usageCount_; }
+bool                Equipment::isUnderMaintenance() const noexcept { return underMaintenance_; }
+bool                Equipment::isInUse() const noexcept      { return inUse_; }
+
+int Equipment::getTotalEquipmentCount() noexcept { return totalCount_; }
+
+void swap(Equipment& a, Equipment& b) noexcept {
+    using std::swap;
+    swap(a.type_,               b.type_);
+    swap(a.inUse_,              b.inUse_);
+    swap(a.remaining_,          b.remaining_);
+    swap(a.user_,               b.user_);
+    swap(a.usageCount_,         b.usageCount_);
+    swap(a.underMaintenance_,   b.underMaintenance_);
+    swap(a.maintenanceRemaining_, b.maintenanceRemaining_);
+}
+
+std::ostream& operator<<(std::ostream& os, const Equipment& eq) {
+    os << eq.getType() << " [";
+    if (eq.isUnderMaintenance()) {
+        os << "maintenance (" << eq.maintenanceRemaining_ << ")";
     }
-    void startUsage(int duration, const std::string& user) override {
-        if (underMaintenance_) {
-            std::cout << type_ << " is under maintenance\n";
-            return;
-        }
-        if (inUse_) {
-            std::cout << type_ << " already in use by " << user_ << "\n";
-            return;
-        }
-        inUse_ = true; remaining_ = duration; user_ = user;
-        ++usageCount_;
-        std::cout << "Started " << type_
-                  << " for " << user << " ("<< duration <<")\n";
+    else if (eq.isInUse()) {
+        os << "in use by " << eq.user_ << " (" << eq.remaining_ << ")";
     }
-    std::unique_ptr<Equipment> clone() const override {
-        return std::make_unique<Treadmill>(*this);
+    else {
+        os << "available";
     }
-};
+    os << ", used " << eq.getUsageCount() << " times]";
+    return os;
+}
