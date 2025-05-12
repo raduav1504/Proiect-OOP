@@ -14,4 +14,3 @@ class IndexException : public GymException {
 public:
     IndexException(const std::string& who, int idx) noexcept;
 };
-
