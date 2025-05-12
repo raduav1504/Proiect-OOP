@@ -1,42 +1,33 @@
 #pragma once
-#include <string>
+#include "FacilityElement.h"
 #include <memory>
-#include <ostream>
 
-class Equipment {
+class Equipment : public FacilityElement {
 public:
     Equipment(std::string type);
     virtual ~Equipment();
 
     Equipment(const Equipment& other);
     Equipment& operator=(Equipment other);
+    friend void swap(Equipment& a, Equipment& b) noexcept;
 
-    // polymorphic interface
+    // Thematic pure-virtual
     virtual void update() = 0;
     virtual void startUsage(int duration, const std::string& user) = 0;
-    virtual std::unique_ptr<Equipment> clone() const = 0;
+    std::unique_ptr<FacilityElement> clone() const override = 0;
 
-    // maintenance
+    // Maintenance
     void scheduleMaintenance(int duration);
     void completeMaintenance();
 
-    // status queries
-    const std::string& getType()        const noexcept;
-    int                 getUsageCount() const noexcept;
-    bool                isUnderMaintenance() const noexcept;
-    bool                isInUse()      const noexcept;
+    bool isUnderMaintenance() const noexcept;
+    bool isInUse() const noexcept;
+    int  getUsageCount() const noexcept;
 
-    // static tracking
-    static int getTotalEquipmentCount() noexcept;
-
-    // swap for copy-and-swap
-    friend void swap(Equipment& a, Equipment& b) noexcept;
-
-    // pretty-print
-    friend std::ostream& operator<<(std::ostream& os, const Equipment& eq);
+    // Static tracking
+    static int getTotalCount() noexcept;
 
 protected:
-    std::string type_;
     bool        inUse_;
     int         remaining_;
     std::string user_;
