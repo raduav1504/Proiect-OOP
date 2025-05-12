@@ -6,7 +6,7 @@
 class FacilityElement {
 public:
     FacilityElement(std::string name);
-    virtual ~FacilityElement();
+    ~FacilityElement() override = default;
     FacilityElement(const FacilityElement& other);
     FacilityElement& operator=(FacilityElement other);
     friend void swap(FacilityElement& a, FacilityElement& b) noexcept;
