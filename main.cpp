@@ -1,67 +1,45 @@
+// src/main.cpp
+
 #include <iostream>
-#include "Gym.h"
-#include "Treadmill.h"
-#include "Elliptical.h"
-#include "StationaryBike.h"
-#include "YogaClass.h"
-#include "SpinningClass.h"
-#include "PilatesClass.h"
-#include "RegularMember.h"
-#include "PremiumMember.h"
-#include "GuestMember.h"
-#include "Scheduler.h"
-#include "Exception.h"
+#include "ClubManager.hpp"
+#include "Treadmill.hpp"
+#include "Dumbbell.hpp"
+#include "StationaryBike.hpp"
+#include "YogaMat.hpp"
+#include "Member.hpp"
+#include "Exceptions.hpp"
 
 int main() {
     try {
-        Gym gym("FMI-Fitness");
+        ClubManager cm;
 
-        // ── facilitati
-        gym.addFacility(std::make_unique<Treadmill>());
-        gym.addFacility(std::make_unique<Elliptical>());
-        gym.addFacility(std::make_unique<StationaryBike>());
+        // adăugăm echipamente
+        cm.addEquipment(Treadmill{10.0, 2});
+        cm.addEquipment(Dumbbell{15.0});
+        cm.addEquipment(StationaryBike{5});
+        cm.addEquipment(YogaMat{6.0});  // noua clasă derivată, fără să modificăm alt cod
 
-        gym.addFacility(std::make_unique<YogaClass>(60));
-        gym.addFacility(std::make_unique<SpinningClass>(45));
-        gym.addFacility(std::make_unique<PilatesClass>(50));
+        // adăugăm membri
+        cm.addMember(Member{"Alice"});
+        cm.addMember(Member{"Bob"});
 
-        // ── membri 
-        gym.addMember(std::make_unique<RegularMember>("Alice",101));
-        gym.addMember(std::make_unique<PremiumMember>("Bob",102));
-        gym.addMember(std::make_unique<GuestMember>("Carol",103));
+        // afișăm starea curentă
+        cm.showAll();
 
-        gym.printStatus(std::cout);
+        // pornim câteva sesiuni de utilizare
+        cm.startUsage(1, 0,  2);  // Alice folosește Treadmill 2s
+        cm.startUsage(2, 1,  3);  // Bob folosește Dumbbell 3s
+        // cm.startUsage(1, 2, -5); // aruncă UsageException
 
-        // ── demonstram apel virtual si dynamic_cast
-        if (auto* eq = dynamic_cast<Equipment*>(gym.getFacility(0)))
-            eq->startUsage(5,"Alice");
-
-        if (auto* cls = dynamic_cast<FitnessClass*>(gym.getFacility(3)))
-            cls->attend("Bob");
-
-        std::cout << "\n-- ticking 3 rounds --\n";
-        for (int i = 0; i < 3; ++i)
-            gym.updateAll();
-
-        // ── Scheduler demo 
-        Scheduler sched(std::make_unique<SpinningClass>(30));
-        sched.schedule("Carol");
-        sched.tick();
-
-        // ── statice 
-        std::cout << "\nTotal equipments: " << Equipment::getTotalCount() << "\n";
-        std::cout << "Total members:   " << Member::getTotalCount()   << "\n";
-
-        // ── raport 
-        gym.reportFacilities();
+    } catch (const MemberException&   e) {
+        std::cerr << "Member error:    " << e.what() << "\n";
+    } catch (const EquipmentException& e) {
+        std::cerr << "Equipment error: " << e.what() << "\n";
+    } catch (const UsageException&     e) {
+        std::cerr << "Usage error:     " << e.what() << "\n";
+    } catch (const std::exception&     e) {
+        std::cerr << "Unexpected:      " << e.what() << "\n";
     }
-    catch (const FitnessException& ex) {
-        std::cerr << "FitnessException: " << ex.what() << "\n";
-        return 1;
-    }
-    catch (const std::exception& ex) {
-        std::cerr << "std::exception: " << ex.what() << "\n";
-        return 2;
-    }
+
     return 0;
 }
