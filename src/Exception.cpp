@@ -1,13 +1,20 @@
 #include "Exception.h"
 
-GymException::GymException(std::string msg) noexcept
-  : message_{std::move(msg)}
-{}
+FitnessException::FitnessException(std::string msg) noexcept
+  : msg_{std::move(msg)} {}
 
-const char* GymException::what() const noexcept {
-    return message_.c_str();
+const char* FitnessException::what() const noexcept {
+    return msg_.c_str();
 }
 
-IndexException::IndexException(const std::string& who, int idx) noexcept
-  : GymException(who + " index invalid: " + std::to_string(idx))
+EquipmentException::EquipmentException(const std::string& op, int idx) noexcept
+  : FitnessException("Equipment error in " + op + ": " + std::to_string(idx))
+{}
+
+MemberException::MemberException(const std::string& op, int id) noexcept
+  : FitnessException("Member error in " + op + ": " + std::to_string(id))
+{}
+
+ScheduleException::ScheduleException(const std::string& detail) noexcept
+  : FitnessException("Schedule error: " + detail)
 {}
