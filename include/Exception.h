@@ -2,15 +2,24 @@
 #include <exception>
 #include <string>
 
-class GymException : public std::exception {
+class FitnessException : public std::exception {
 public:
-    explicit GymException(std::string msg) noexcept;
+    explicit FitnessException(std::string msg) noexcept;
     const char* what() const noexcept override;
 private:
-    std::string message_;
+    std::string msg_;
 };
 
-class IndexException : public GymException {
+// 3 erori specifice independente de ierarhia FacilityElement
+class EquipmentException : public FitnessException {
 public:
-    IndexException(const std::string& who, int idx) noexcept;
+    EquipmentException(const std::string& op, int idx) noexcept;
+};
+class MemberException : public FitnessException {
+public:
+    MemberException(const std::string& op, int id) noexcept;
+};
+class ScheduleException : public FitnessException {
+public:
+    ScheduleException(const std::string& detail) noexcept;
 };
