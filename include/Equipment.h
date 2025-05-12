@@ -5,7 +5,7 @@
 class Equipment : public FacilityElement {
 public:
     Equipment(std::string type);
-    virtual ~Equipment();
+    ~Equipment() override;
 
     Equipment(const Equipment& other);
     Equipment& operator=(Equipment other);
