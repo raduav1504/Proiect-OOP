@@ -3,7 +3,7 @@
 
 class YogaClass : public FitnessClass {
 public:
-    YogaClass(int duration);
+    explicit YogaClass(int duration);
     void describe()   const override;
     void attend(const std::string& memberName) override;
     void update()                 override;
