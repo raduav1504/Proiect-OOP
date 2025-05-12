@@ -20,7 +20,7 @@ public:
 protected:
     Equipment(std::string name);
 
-    // detaliile concrete sunt în această funcţie virtuală
+    // detaliile concrete sunt în aceasta functie virtuala
     virtual void printDetails(std::ostream& os) const = 0;
 
     int         id_;
