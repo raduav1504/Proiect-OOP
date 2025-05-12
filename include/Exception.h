@@ -21,5 +21,5 @@ public:
 };
 class ScheduleException : public FitnessException {
 public:
-    ScheduleException(const std::string& detail) noexcept;
+    explicit ScheduleException(const std::string& detail) noexcept;
 };
