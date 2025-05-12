@@ -4,7 +4,7 @@
 
 class Scheduler {
 public:
-    Scheduler(std::unique_ptr<FitnessClass> cls);
+    explicit Scheduler(std::unique_ptr<FitnessClass> cls);
     void schedule(const std::string& memberName);
     void tick();
 
