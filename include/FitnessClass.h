@@ -5,7 +5,7 @@
 class FitnessClass : public FacilityElement {
 public:
     FitnessClass(std::string name, int duration);
-    virtual ~FitnessClass();
+    ~FitnessClass() override;
 
     FitnessClass(const FitnessClass& other);
     FitnessClass& operator=(FitnessClass other);
