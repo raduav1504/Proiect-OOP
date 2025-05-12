@@ -1,7 +1,4 @@
-// Gym.h
-#ifndef GYM_H
-#define GYM_H
-
+#pragma once
 #include <string>
 #include <vector>
 #include <memory>
@@ -10,38 +7,40 @@
 #include "Member.h"
 
 class Gym {
-    std::string name_;
-    std::vector<std::unique_ptr<Equipment>> equipments_;
-    std::vector<Member>             members_;
-
 public:
     explicit Gym(std::string name);
     Gym(const Gym& other);
     Gym& operator=(Gym other);
     ~Gym();
 
-    // add / remove
+    // equipment
     void addEquipment(std::unique_ptr<Equipment> eq);
     void removeEquipment(int eqIndex);
 
-    void addMember(const Member& m);
+    // members
+    void addMember(std::unique_ptr<Member> m);
     void removeMember(int memberIndex);
 
-    // usage
+    // usage & maintenance
     void startEquipmentUsage(int eqIndex, int duration, int memberIndex);
-
-    // maintenance
     void scheduleMaintenance(int eqIndex, int duration);
     void completeMaintenance(int eqIndex);
 
-    // tick the clock
-    void update(); 
+    // advance time
+    void update();
 
-    // searches & status
+    // queries
     std::vector<int> searchEquipmentByType(const std::string& type) const;
     void printStatus(std::ostream& os) const;
 
-    friend void swap(Gym& a, Gym& b);
-};
+    // for dynamic_cast demo
+    Equipment* getEquipment(int idx) const;
+    int getEquipmentCount() const noexcept;
 
-#endif // GYM_H
+    friend void swap(Gym& a, Gym& b);
+
+private:
+    std::string name_;
+    std::vector<std::unique_ptr<Equipment>> equipments_;
+    std::vector<std::unique_ptr<Member>>    members_;
+};
