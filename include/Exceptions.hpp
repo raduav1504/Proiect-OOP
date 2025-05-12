@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <string>
 
-// baza proprie derivată din std::runtime_error
+// baza proprie derivata din std::runtime_error
 class AppException : public std::runtime_error {
 public:
     using std::runtime_error::runtime_error;
