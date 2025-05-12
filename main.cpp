@@ -3,73 +3,65 @@
 #include "Treadmill.h"
 #include "Elliptical.h"
 #include "StationaryBike.h"
+#include "YogaClass.h"
+#include "SpinningClass.h"
+#include "PilatesClass.h"
 #include "RegularMember.h"
+#include "PremiumMember.h"
+#include "GuestMember.h"
+#include "Scheduler.h"
 #include "Exception.h"
 
 int main() {
     try {
         Gym gym("FMI-Fitness");
 
-        // add equipment
-        gym.addEquipment(std::make_unique<Treadmill>());
-        gym.addEquipment(std::make_unique<Elliptical>());
-        gym.addEquipment(std::make_unique<StationaryBike>());
+        // ── facilitati
+        gym.addFacility(std::make_unique<Treadmill>());
+        gym.addFacility(std::make_unique<Elliptical>());
+        gym.addFacility(std::make_unique<StationaryBike>());
 
-        // add members
-        gym.addMember(std::make_unique<RegularMember>("Alice", 101));
-        gym.addMember(std::make_unique<RegularMember>("Bob",   102));
+        gym.addFacility(std::make_unique<YogaClass>(60));
+        gym.addFacility(std::make_unique<SpinningClass>(45));
+        gym.addFacility(std::make_unique<PilatesClass>(50));
+
+        // ── membri 
+        gym.addMember(std::make_unique<RegularMember>("Alice",101));
+        gym.addMember(std::make_unique<PremiumMember>("Bob",102));
+        gym.addMember(std::make_unique<GuestMember>("Carol",103));
 
         gym.printStatus(std::cout);
 
-        // start usage & maintenance
-        gym.startEquipmentUsage(0, 5, 0); // Alice uses treadmill 5 ticks
-        gym.scheduleMaintenance(2, 3);    // Bike into maintenance for 3 ticks
+        // ── demonstram apel virtual si dynamic_cast
+        if (auto* eq = dynamic_cast<Equipment*>(gym.getFacility(0)))
+            eq->startUsage(5,"Alice");
 
-        std::cout << "\n--- Running 6 updates ---\n";
-        for (int i = 0; i < 6; ++i) {
-            gym.update();
-            gym.printStatus(std::cout);
-        }
+        if (auto* cls = dynamic_cast<FitnessClass*>(gym.getFacility(3)))
+            cls->attend("Bob");
 
-        // search
-        auto ellips = gym.searchEquipmentByType("Elliptical");
-        std::cout << "\nAll Elliptical indexes:";
-        for (int idx : ellips) std::cout << " " << idx;
-        std::cout << "\n";
+        std::cout << "\n-- ticking 3 rounds --\n";
+        for (int i = 0; i < 3; ++i)
+            gym.updateAll();
 
-        // dynamic_cast demo
-        std::cout << "\n-- Dynamic cast demo --\n";
-        for (int i = 0; i < gym.getEquipmentCount(); ++i) {
-            Equipment* eq = gym.getEquipment(i);
-            if (auto* tm = dynamic_cast<Treadmill*>(eq)) {
-                std::cout << "Equipment " << i << " is a treadmill\n";
-            }
-        }
+        // ── Scheduler demo 
+        Scheduler sched(std::make_unique<SpinningClass>(30));
+        sched.schedule("Carol");
+        sched.tick();
 
-        // static counts
-        std::cout << "\nTotal equipment ever created: "
-                  << Equipment::getTotalEquipmentCount() << "\n";
-        std::cout << "Current members: "
-                  << Member::getTotalMembers() << "\n";
+        // ── statice 
+        std::cout << "\nTotal equipments: " << Equipment::getTotalCount() << "\n";
+        std::cout << "Total members:   " << Member::getTotalCount()   << "\n";
 
-        // remove some entries
-        gym.removeMember(1);
-        gym.removeEquipment(1);
-
-        std::cout << "\nAfter removing some entries:\n";
-        gym.printStatus(std::cout);
+        // ── raport 
+        gym.reportFacilities();
     }
-    catch (const IndexException& ex) {
-        std::cerr << "Index error: " << ex.what() << "\n";
+    catch (const FitnessException& ex) {
+        std::cerr << "FitnessException: " << ex.what() << "\n";
         return 1;
     }
-    catch (const GymException& ex) {
-        std::cerr << "Gym error: " << ex.what() << "\n";
-        return 2;
-    }
     catch (const std::exception& ex) {
-        std::cerr << "Unexpected error: " << ex.what() << "\n";
-        return 3;
+        std::cerr << "std::exception: " << ex.what() << "\n";
+        return 2;
     }
     return 0;
 }
