@@ -17,6 +17,10 @@ public:
     virtual std::unique_ptr<Equipment> clone() const = 0;
 
     const std::string& getType() const noexcept;
+    int getUsageCount() const noexcept;
+    bool isUnderMaintenance() const noexcept;
+    void scheduleMaintenance();
+    void completeMaintenance();
 
     friend void swap(Equipment& a, Equipment& b) noexcept;
 protected:
@@ -24,5 +28,6 @@ protected:
     bool inUse_;
     int remaining_;
     std::string user_;
+    int usageCount_;
+    bool underMaintenance_;
 };
-
