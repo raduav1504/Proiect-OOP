@@ -1,28 +1,27 @@
-#pragma once
+#ifndef MEMBER_HPP
+#define MEMBER_HPP
+
 #include <string>
-#include <memory>
-#include <ostream>
+#include <iostream>
 
 class Member {
 public:
-    Member(std::string name, int id);
-    virtual ~Member();
+    explicit Member(std::string name);
 
     Member(const Member& other);
     Member& operator=(Member other);
-    friend void swap(Member& a, Member& b) noexcept;
 
-    virtual std::unique_ptr<Member> clone() const = 0;
-    virtual void info() const = 0;
+    friend void swap(Member& a, Member& b);
 
-    int                 getID()   const noexcept;
-    const std::string&  getName() const noexcept;
-    static int          getTotalCount() noexcept;
+    int getId()   const;
+    const std::string& getName() const;
+
+    void print(std::ostream& os = std::cout) const;
 
 private:
+    static int nextId_;
+    int id_;
     std::string name_;
-    int         id_;
-    static int  totalCount_;
 };
 
-std::ostream& operator<<(std::ostream& os, const Member& m);
+#endif // MEMBER_HPP
