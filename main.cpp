@@ -1,54 +1,56 @@
+// main.cpp
 #include <iostream>
 #include "Gym.h"
 #include "Equipment.h"
 #include "Member.h"
-#include "Exception.h"
+#include "exceptions.h"
 
 int main() {
     try {
-        Gym gym{"SuperGym"};
+        Gym gym("FMI-Fitness");
 
-        // Adăugăm 2 echipamente
-        gym.addEquipment(Treadmill{});
-        gym.addEquipment(Bike{});
+        // add some kit
+        gym.addEquipment(std::make_unique<Equipment>("Treadmill"));
+        gym.addEquipment(std::make_unique<Equipment>("Elliptical"));
+        gym.addEquipment(std::make_unique<Equipment>("Stationary Bike"));
 
-        // Adăugăm 2 membri
-        gym.addMember(Regular{"Ana", 1});
-        gym.addMember(Regular{"Bogdan", 2});
+        // add members
+        gym.addMember(Member("Alice", 101));
+        gym.addMember(Member("Bob",   102));
 
-        int choice;
-        do {
-            std::cout << "\n1) Update all\n"
-                      << "2) Start usage\n"
-                      << "3) Print status\n"
-                      << "0) Exit\n"
-                      << "> ";
-            std::cin >> choice;
-            switch (choice) {
-                case 1:
-                    gym.updateAll();
-                    break;
-                case 2: {
-                    size_t ei, mi;
-                    int dur;
-                    std::cout << "Eq idx, Mem idx, Dur: ";
-                    std::cin >> ei >> mi >> dur;
-                    gym.startUsage(ei, mi, dur);
-                    break;
-                }
-                case 3:
-                    gym.printStatus();
-                    break;
-                case 0:
-                    break;
-                default:
-                    std::cout << "Invalid\n";
-            }
-        } while (choice != 0);
+        gym.printStatus(std::cout);
 
-    } catch (const std::exception& ex) {
-        std::cerr << "Error: " << ex.what() << "\n";
+        // start usage
+        gym.startEquipmentUsage(0, 5, 0);  // Alice on Treadmill 5 ticks
+        gym.scheduleMaintenance(2, 3);     // Bike into maintenance for 3 ticks
+
+        std::cout << "\n--- Running 6 updates ---\n";
+        for (int i = 0; i < 6; ++i) {
+            gym.update();
+            gym.printStatus(std::cout);
+        }
+
+        // search for all “Elliptical”
+        auto ellips = gym.searchEquipmentByType("Elliptical");
+        std::cout << "\nAll Elliptical indexes:";
+        for (int idx : ellips) std::cout << " " << idx;
+        std::cout << "\n";
+
+        // remove Bob
+        gym.removeMember(1);
+        gym.removeEquipment(1);
+
+        std::cout << "\nAfter removing some entries:\n";
+        gym.printStatus(std::cout);
+
+    } 
+    catch (const IndexException& ex) {
+        std::cerr << "Index error: " << ex.what() << "\n";
         return 1;
+    }
+    catch (const std::exception& ex) {
+        std::cerr << "Unexpected error: " << ex.what() << "\n";
+        return 2;
     }
     return 0;
 }
