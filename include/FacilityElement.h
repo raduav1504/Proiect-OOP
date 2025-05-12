@@ -5,6 +5,7 @@
 
 class FacilityElement {
 public:
+
     FacilityElement(std::string name);
     ~FacilityElement() override = default;
     FacilityElement(const FacilityElement& other);
