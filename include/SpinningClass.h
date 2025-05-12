@@ -3,7 +3,7 @@
 
 class SpinningClass : public FitnessClass {
 public:
-    SpinningClass(int duration);
+    explicit SpinningClass(int duration);
     void describe()   const override;
     void attend(const std::string& memberName) override;
     void update()                 override;
