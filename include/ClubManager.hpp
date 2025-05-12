@@ -17,8 +17,8 @@ public:
     void addEquipment(const Equipment& eq);
     void addMember   (const Member&   m);
 
-    // funcție exemplar specifică teme:
-    // folosește funcțiile virtuale prin Equipment*
+    // funcție exemplar specifica teme:
+    // folosește functiile virtuale prin Equipment*
     void startUsage(int memberId, int equipmentIndex, int durationSec);
 
     void showAll() const;
