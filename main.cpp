@@ -14,23 +14,23 @@ int main() {
     try {
         ClubManager cm;
 
-        // adăugăm echipamente
+        // adaugam echipamente
         cm.addEquipment(Treadmill{10.0, 2});
         cm.addEquipment(Dumbbell{15.0});
         cm.addEquipment(StationaryBike{5});
-        cm.addEquipment(YogaMat{6.0});  // noua clasă derivată, fără să modificăm alt cod
+        cm.addEquipment(YogaMat{6.0});  // noua clasă derivata
 
-        // adăugăm membri
+        // adaugam membri
         cm.addMember(Member{"Alice"});
         cm.addMember(Member{"Bob"});
 
-        // afișăm starea curentă
+        // afisam starea curenta
         cm.showAll();
 
-        // pornim câteva sesiuni de utilizare
-        cm.startUsage(1, 0,  2);  // Alice folosește Treadmill 2s
-        cm.startUsage(2, 1,  3);  // Bob folosește Dumbbell 3s
-        // cm.startUsage(1, 2, -5); // aruncă UsageException
+        // pornim cateva sesiuni de utilizare
+        cm.startUsage(1, 0,  2);  // Alice foloseate Treadmill 2s
+        cm.startUsage(2, 1,  3);  // Bob foloseste Dumbbell 3s
+        // cm.startUsage(1, 2, -5); // arunca UsageException
 
     } catch (const MemberException&   e) {
         std::cerr << "Member error:    " << e.what() << "\n";
