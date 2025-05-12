@@ -1,20 +1,17 @@
-#include "Exception.h"
+// src/Exceptions.cpp
 
-FitnessException::FitnessException(std::string msg) noexcept
-  : msg_{std::move(msg)} {}
+#include "Exceptions.hpp"
 
-const char* FitnessException::what() const noexcept {
-    return msg_.c_str();
-}
+// definițiile out-of-line ale constructorilor
 
-EquipmentException::EquipmentException(const std::string& op, int idx) noexcept
-  : FitnessException("Equipment error in " + op + ": " + std::to_string(idx))
+MemberException::MemberException(const std::string& msg)
+  : std::runtime_error(msg)
 {}
 
-MemberException::MemberException(const std::string& op, int id) noexcept
-  : FitnessException("Member error in " + op + ": " + std::to_string(id))
+EquipmentException::EquipmentException(const std::string& msg)
+  : std::runtime_error(msg)
 {}
 
-ScheduleException::ScheduleException(const std::string& detail) noexcept
-  : FitnessException("Schedule error: " + detail)
+UsageException::UsageException(const std::string& msg)
+  : std::runtime_error(msg)
 {}
