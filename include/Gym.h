@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 #include <ostream>
-#include "Equipment.h"
+#include "FacilityElement.h"
 #include "Member.h"
 
 class Gym {
@@ -13,34 +13,24 @@ public:
     Gym& operator=(Gym other);
     ~Gym();
 
-    // equipment
-    void addEquipment(std::unique_ptr<Equipment> eq);
-    void removeEquipment(int eqIndex);
-
-    // members
+    // facilitati si membri
+    void addFacility(std::unique_ptr<FacilityElement> elem);
+    void removeFacility(int idx);
     void addMember(std::unique_ptr<Member> m);
-    void removeMember(int memberIndex);
+    void removeMember(int idx);
 
-    // usage & maintenance
-    void startEquipmentUsage(int eqIndex, int duration, int memberIndex);
-    void scheduleMaintenance(int eqIndex, int duration);
-    void completeMaintenance(int eqIndex);
-
-    // advance time
-    void update();
-
-    // queries
-    std::vector<int> searchEquipmentByType(const std::string& type) const;
+    // afisare si actualizare
     void printStatus(std::ostream& os) const;
+    void updateAll();
+    void reportFacilities() const;
 
-    // for dynamic_cast demo
-    Equipment* getEquipment(int idx) const;
-    int getEquipmentCount() const noexcept;
+    int getFacilityCount() const noexcept;
+    FacilityElement* getFacility(int idx) const;
 
-    friend void swap(Gym& a, Gym& b);
+    friend void swap(Gym& a, Gym& b) noexcept;
 
 private:
     std::string name_;
-    std::vector<std::unique_ptr<Equipment>> equipments_;
-    std::vector<std::unique_ptr<Member>>    members_;
+    std::vector<std::unique_ptr<FacilityElement>> facilities_;
+    std::vector<std::unique_ptr<Member>>          members_;
 };
