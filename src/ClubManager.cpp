@@ -18,11 +18,11 @@ void ClubManager::addMember(const Member& m) {
 }
 
 void ClubManager::startUsage(int memberId, int equipmentIndex, int durationSec) {
-    // aruncăm dacă durata e negativă
+    // aruncam dacă durata e negativa
     if (durationSec < 0)
         throw UsageException("Duration must be non-negative");
 
-    // căutăm membrul
+    // cautam membrul
     auto mIt = std::find_if(
         members_.begin(), members_.end(),
         [&](auto& m){ return m.getId() == memberId; }
@@ -30,11 +30,11 @@ void ClubManager::startUsage(int memberId, int equipmentIndex, int durationSec) 
     if (mIt == members_.end())
         throw MemberException("Member ID not found");
 
-    // validăm indexul de echipament
+    // validam indexul de echipament
     if (equipmentIndex < 0 || equipmentIndex >= (int)equipment_.size())
         throw EquipmentException("Invalid equipment index");
 
-    // 👉 demonstrație dynamic_cast pentru downcast
+    // demonstrație dynamic_cast pentru downcast
     auto& eqPtr = equipment_[equipmentIndex];
     if (auto* t = dynamic_cast<Treadmill*>(eqPtr.get())) {
         std::cout << "[DEBUG] It's a Treadmill\n";
