@@ -1,24 +1,21 @@
-// Gym.cpp
 #include "Gym.h"
-#include "exceptions.h"   // your own exception types
+#include "Exception.h"
 #include <algorithm>
 #include <iostream>
 
-// —————————————————————————————————————————————————————————
-//  Ctor / copy / assign / dtor
-// —————————————————————————————————————————————————————————
-
 Gym::Gym(std::string name)
-  : name_(std::move(name))
+  : name_{std::move(name)}
 {}
 
 Gym::Gym(const Gym& other)
-  : name_(other.name_)
+  : name_{other.name_}
 {
     for (auto& eq : other.equipments_) {
-        equipments_.push_back(std::make_unique<Equipment>(*eq));
+        equipments_.push_back(eq->clone());
     }
-    members_ = other.members_;
+    for (auto& m : other.members_) {
+        members_.push_back(m->clone());
+    }
 }
 
 Gym& Gym::operator=(Gym other) {
@@ -30,100 +27,85 @@ Gym::~Gym() = default;
 
 void swap(Gym& a, Gym& b) {
     using std::swap;
-    swap(a.name_,        b.name_);
-    swap(a.equipments_,  b.equipments_);
-    swap(a.members_,     b.members_);
+    swap(a.name_,       b.name_);
+    swap(a.equipments_, b.equipments_);
+    swap(a.members_,    b.members_);
 }
 
-// —————————————————————————————————————————————————————————
-//  add / remove
-// —————————————————————————————————————————————————————————
-
 void Gym::addEquipment(std::unique_ptr<Equipment> eq) {
-    if (!eq) throw IndexException("null equipment");
+    if (!eq) throw IndexException("addEquipment", -1);
     equipments_.push_back(std::move(eq));
 }
 
 void Gym::removeEquipment(int idx) {
-    if (idx < 0 || idx >= int(equipments_.size()))
-        throw IndexException("equipment index out of range");
+    if (idx < 0 || idx >= static_cast<int>(equipments_.size()))
+        throw IndexException("equipment", idx);
     equipments_.erase(equipments_.begin() + idx);
 }
 
-void Gym::addMember(const Member& m) {
-    members_.push_back(m);
+void Gym::addMember(std::unique_ptr<Member> m) {
+    if (!m) throw IndexException("addMember", -1);
+    members_.push_back(std::move(m));
 }
 
 void Gym::removeMember(int idx) {
-    if (idx < 0 || idx >= int(members_.size()))
-        throw IndexException("member index out of range");
+    if (idx < 0 || idx >= static_cast<int>(members_.size()))
+        throw IndexException("member", idx);
     members_.erase(members_.begin() + idx);
 }
 
-// —————————————————————————————————————————————————————————
-//  start usage
-// —————————————————————————————————————————————————————————
-
 void Gym::startEquipmentUsage(int eqIndex, int duration, int memberIndex) {
-    if (eqIndex < 0 || eqIndex >= int(equipments_.size()))
-        throw IndexException("equipment index out of range");
-    if (memberIndex < 0 || memberIndex >= int(members_.size()))
-        throw IndexException("member index out of range");
-    equipments_[eqIndex]->startUsage(duration, members_[memberIndex].getName());
+    if (eqIndex < 0 || eqIndex >= static_cast<int>(equipments_.size()))
+        throw IndexException("equipment", eqIndex);
+    if (memberIndex < 0 || memberIndex >= static_cast<int>(members_.size()))
+        throw IndexException("member", memberIndex);
+    equipments_[eqIndex]->startUsage(duration, members_[memberIndex]->getName());
 }
 
-// —————————————————————————————————————————————————————————
-//  maintenance
-// —————————————————————————————————————————————————————————
-
 void Gym::scheduleMaintenance(int eqIndex, int duration) {
-    if (eqIndex < 0 || eqIndex >= int(equipments_.size()))
-        throw IndexException("equipment index out of range");
-    equipments_[eqIndex]->startMaintenance(duration);
+    if (eqIndex < 0 || eqIndex >= static_cast<int>(equipments_.size()))
+        throw IndexException("equipment", eqIndex);
+    equipments_[eqIndex]->scheduleMaintenance(duration);
 }
 
 void Gym::completeMaintenance(int eqIndex) {
-    if (eqIndex < 0 || eqIndex >= int(equipments_.size()))
-        throw IndexException("equipment index out of range");
-    equipments_[eqIndex]->stopMaintenance();
+    if (eqIndex < 0 || eqIndex >= static_cast<int>(equipments_.size()))
+        throw IndexException("equipment", eqIndex);
+    equipments_[eqIndex]->completeMaintenance();
 }
-
-// —————————————————————————————————————————————————————————
-//  update clock (usage + maintenance)
-// —————————————————————————————————————————————————————————
 
 void Gym::update() {
     for (auto& eq : equipments_) {
-        eq->updateUsage();
-        eq->updateMaintenance();
+        eq->update();
     }
 }
 
-// —————————————————————————————————————————————————————————
-//  search by type
-// —————————————————————————————————————————————————————————
-
 std::vector<int> Gym::searchEquipmentByType(const std::string& type) const {
     std::vector<int> result;
-    for (int i = 0; i < int(equipments_.size()); ++i) {
+    for (int i = 0; i < static_cast<int>(equipments_.size()); ++i) {
         if (equipments_[i]->getType() == type)
             result.push_back(i);
     }
     return result;
 }
 
-// —————————————————————————————————————————————————————————
-//  print everything
-// —————————————————————————————————————————————————————————
-
 void Gym::printStatus(std::ostream& os) const {
-    os << "\nGym: " << name_ << "\n\n"
-       << "Equipments:\n";
-    for (int i = 0; i < int(equipments_.size()); ++i) {
+    os << "\nGym: " << name_ << "\n\nEquipments:\n";
+    for (int i = 0; i < static_cast<int>(equipments_.size()); ++i) {
         os << " [" << i << "] " << *equipments_[i] << "\n";
     }
     os << "\nMembers:\n";
     for (auto const& m : members_) {
-        os << "  - " << m << "\n";
+        m->info();  // prints to cout
     }
+}
+
+Equipment* Gym::getEquipment(int idx) const {
+    if (idx < 0 || idx >= static_cast<int>(equipments_.size()))
+        throw IndexException("equipment", idx);
+    return equipments_[idx].get();
+}
+
+int Gym::getEquipmentCount() const noexcept {
+    return static_cast<int>(equipments_.size());
 }
