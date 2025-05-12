@@ -51,42 +51,6 @@ include(cmake/CopyHelper.cmake)
 add_executable(${MAIN_EXECUTABLE_NAME}
     main.cpp
     generated/src/Helper.cpp
-        include/Elliptical.h
-        include/Equipment.h
-        include/Exception.h
-        include/FacilityElement.h
-        include/FitnessClass.h
-        include/GuestMember.h
-        include/Gym.h
-        include/Member.h
-        include/PilatesClass.h
-        include/PremiumMember.h
-        include/RegularMember.h
-        include/Report.h
-        include/Scheduler.h
-        include/SpinningClass.h
-        include/StationaryBike.h
-        include/Treadmill.h
-        include/YogaClass.h
-        src/Elliptical.cpp
-        src/Equipment.cpp
-        src/Exception.cpp
-        src/FacilityElement.cpp
-        src/FitnessClass.cpp
-        src/GuestMember.cpp
-        src/Gym.cpp
-        src/Member.cpp
-        src/PilatesClass.cpp
-        src/PremiumMember.cpp
-        src/RegularMember.cpp
-        src/Report.cpp
-        src/Scheduler.cpp
-        src/SpinningClass.cpp
-        src/StationaryBike.cpp
-        src/Treadmill.cpp
-        src/YogaClass.cpp
-
-
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
